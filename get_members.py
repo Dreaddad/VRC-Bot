@@ -1,22 +1,31 @@
+import base64
 import os
 import requests
 
 # 1. Safely pull credentials from GitHub Secrets
 USERNAME = os.getenv("VRC_USERNAME")
 PASSWORD = os.getenv("VRC_PASSWORD")
-GROUP_ID = "grp_4afbd931-4ba6-4bcd-a5f7-5672e0671a9e"  # Just the ID string
+GROUP_ID = "grp_4afbd931-4ba6-4bcd-a5f7-5672e0671a9e"
 
 if not USERNAME or not PASSWORD:
     print("Error: Missing VRChat credentials.")
     exit(1)
 
-# VRChat API Base URL and Headers
+# VRChat API Base URL
 BASE_URL = "https://api.vrchat.cloud/api/1"
-headers = {"User-Agent": "MyVRCWorldBot/1.0 (your-email@example.com)"}
+
+# Manuelle Base64-Kodierung mit UTF-8 (behebt den Unicode-Fehler bei Sonderzeichen)
+credentials = f"{USERNAME}:{PASSWORD}"
+encoded_credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
+
+headers = {
+    "User-Agent": "MyVRCWorldBot/1.0 (your-email@example.com)",
+    "Authorization": f"Basic {encoded_credentials}"
+}
 
 # 2. Authenticate
 auth_url = f"{BASE_URL}/auth/user"
-response = requests.get(auth_url, auth=(USERNAME, PASSWORD), headers=headers)
+response = requests.get(auth_url, headers=headers)
 
 if response.status_code != 200:
     print(f"Authentication failed: {response.status_code} - {response.text}")
@@ -41,7 +50,6 @@ while True:
         break
         
     for member in data:
-        # Safely extract displayName depending on API response structure
         if 'user' in member and 'displayName' in member['user']:
             all_members.append(member['user']['displayName'])
         elif 'displayName' in member:
