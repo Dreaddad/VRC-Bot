@@ -32,8 +32,8 @@ jobs:
       - name: Fetch Group Members
         env:
           VRC_AUTH_COOKIE: ${{ secrets.VRC_AUTH_COOKIE }}
+          VRC_2FA_COOKIE: ${{ secrets.VRC_2FA_COOKIE }}
         run: python get_members.py
-
       # 5. Automatically commit and push the updated group_members.txt back to your repo
       - name: Commit and Push Changes
         run: |
