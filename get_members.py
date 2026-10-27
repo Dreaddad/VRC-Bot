@@ -19,7 +19,7 @@ credentials = f"{USERNAME}:{PASSWORD}"
 encoded_credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
 
 headers = {
-    "User-Agent": "MyVRCWorldBot/1.0 (your-email@example.com)",
+    "User-Agent": "MyVRCWorldBot/1.0 (to.karl.ehrhardt@gmail.com)",
     "Authorization": f"Basic {encoded_credentials}"
 }
 
