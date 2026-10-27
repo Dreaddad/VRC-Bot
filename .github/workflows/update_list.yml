@@ -29,11 +29,10 @@ jobs:
       run: pip install requests
 
     # 4. Run the script using your hidden GitHub secrets
-    - name: Fetch Group Members
-      env:
-        VRC_USERNAME: ${{ secrets.VRC_USERNAME }}
-        VRC_PASSWORD: ${{ secrets.VRC_PASSWORD }}
-      run: python get_members.py
+- name: Fetch Group Members
+  env:
+    VRC_AUTH_COOKIE: ${{ secrets.VRC_AUTH_COOKIE }}
+  run: python get_members.py
 
     # 5. Automatically commit and push the updated group_members.txt back to your repo
     - name: Commit and Push Changes
