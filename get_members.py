@@ -1,8 +1,9 @@
 import os
 import requests
 
-# 1. Hole den Cookie aus den GitHub Secrets
+# 1. Cookies aus den GitHub Secrets holen
 AUTH_COOKIE = os.getenv("VRC_AUTH_COOKIE")
+TWO_FACTOR_COOKIE = os.getenv("VRC_2FA_COOKIE")
 GROUP_ID = "grp_4afbd931-4ba6-4bcd-a5f7-5672e0671a9e"
 
 if not AUTH_COOKIE:
@@ -14,19 +15,23 @@ BASE_URL = "https://api.vrchat.cloud/api/1"
 headers = {
     "User-Agent": "MyVRCWorldBot/1.0 (deine-echte-email@gmail.com)"
 }
+
+# Beide Cookies in das Dictionary packen
 cookies = {
     "auth": AUTH_COOKIE
 }
+if TWO_FACTOR_COOKIE:
+    cookies["twoFactorAuth"] = TWO_FACTOR_COOKIE
 
-# 2. Authentifizierung prüfen (Testen ob der Cookie gültig ist)
+# 2. Authentifizierung prüfen
 auth_url = f"{BASE_URL}/auth/user"
 response = requests.get(auth_url, cookies=cookies, headers=headers)
 
 if response.status_code != 200:
-    print(f"Authentication failed (Cookie expired or invalid): {response.status_code} - {response.text}")
+    print(f"Authentication failed: {response.status_code} - {response.text}")
     exit(1)
 
-print("Successfully authenticated via Cookie!")
+print("Successfully authenticated via Cookies!")
 
 # 3. Gruppenmitglieder mit Pagination abrufen
 members_url = f"{BASE_URL}/groups/{GROUP_ID}/members"
